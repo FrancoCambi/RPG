@@ -23,23 +23,23 @@ public class GameController : MonoBehaviour
 	private GameObject tooltip;
 
 	[SerializeField]
-	private TextMeshProUGUI levelUiText;
-
-	[SerializeField]
 	private ActionButton[] actionButtons;
 
 	[SerializeField]
-	private CanvasGroup keyBindsGroup;
+	private CanvasGroup mainMenuGroup;
 
 	private Text tooltipText;
 
 	public GameState state = GameState.FreeRoam;
 
 	private GameObject[] keyBindButtons;
+	
+	private Camera mainCamera;
 
 	private void Awake()
 	{
 		keyBindButtons = GameObject.FindGameObjectsWithTag("Keybind");
+		mainCamera = Camera.main;
 	}
 
 	private void Start()
@@ -58,7 +58,6 @@ public class GameController : MonoBehaviour
 
 		instance = this;
 		tooltipText = tooltip.GetComponentInChildren<Text>();
-		levelUiText.text = PlayerStats.Instance.Level.ToString();
 
 
 	}
@@ -88,11 +87,12 @@ public class GameController : MonoBehaviour
 				LootWindow.instance.Close();
 				QuestLog.Instance.Close();
 				QuestGiverWindow.instance.Close();
-
+				MainMenu.Instance.CloseKeybinds();
+				MainMenu.Instance.CloseSaving();
 			}
 			else
 			{
-
+					
 				OpenCloseMenu();
 
 			}
@@ -134,14 +134,15 @@ public class GameController : MonoBehaviour
 	private bool AnyUiOpen()
 	{
 		return Inventory.Instance.IsOpen || CharacterPanel.instance.IsOpen || LootWindow.instance.IsOpen 
-			   || VendorWindow.instance.IsOpen || QuestLog.Instance.IsOpen || QuestGiverWindow.instance.IsOpen;
+			   || VendorWindow.instance.IsOpen || QuestLog.Instance.IsOpen || QuestGiverWindow.instance.IsOpen
+			   || MainMenu.Instance.AnyOpenBesidesMain();
 	}
 
 	private void ClickTarget()
 	{
 		if (Input.GetMouseButtonDown(1) && !EventSystem.current.IsPointerOverGameObject())
 		{
-			RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, Mathf.Infinity, LayerMask.GetMask("Clickable"));
+			RaycastHit2D hit = Physics2D.Raycast(mainCamera.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, Mathf.Infinity, LayerMask.GetMask("Clickable"));
 
 			if (hit.collider != null && state == GameState.FreeRoam)
 			{
@@ -192,17 +193,15 @@ public class GameController : MonoBehaviour
 
 	public void OpenCloseMenu()
 	{
-		if (keyBindsGroup.alpha == 0)
-		{
-			state = GameState.Config;
-		}
-		else
-		{
-			state = GameState.FreeRoam;
-		}
 
-		keyBindsGroup.alpha = keyBindsGroup.alpha > 0 ? 0 : 1;
-		keyBindsGroup.blocksRaycasts = keyBindsGroup.blocksRaycasts == false;
+		if (MainMenu.Instance.IsOpen) 
+		{
+			MainMenu.Instance.CloseMainMenu();
+		}
+		else 
+		{
+			MainMenu.Instance.OpenMainMenu();
+		}
 	}
 
 	public void UpdateKeyText(string key, KeyCode code, EventModifiers mod)
@@ -271,12 +270,6 @@ public class GameController : MonoBehaviour
 		}
 
 		tmp.text = t;
-	}
-
-	public void UpdateLevelUiText()
-	{
-		GameEventsManager.instance.playerEvents.PlayerExpChange();
-		levelUiText.text = PlayerStats.Instance.Level.ToString();
 	}
 
 	public void ClickActionButton(string buttonName)

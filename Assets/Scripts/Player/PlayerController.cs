@@ -115,7 +115,7 @@ public class PlayerController : MonoBehaviour
 
         // Action buttons handler
         
-        if (GameController.instance.state == GameState.FreeRoam)
+        if (!MainMenu.Instance.AnyOpen())
         {
             foreach (string action in KeyBindManager.instance.ActionBinds.Keys)
             {

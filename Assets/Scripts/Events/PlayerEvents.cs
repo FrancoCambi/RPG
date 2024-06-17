@@ -23,15 +23,6 @@ public class PlayerEvents
         }
     }
 
-    public event Action onPlayerExpChange;
-    public void PlayerExpChange()
-    {
-        if (onPlayerExpChange != null)
-        {
-            onPlayerExpChange();
-        }
-    }
-
     public event Action onPlayerGoldChange;
     public void PlayerGoldChange()
     {

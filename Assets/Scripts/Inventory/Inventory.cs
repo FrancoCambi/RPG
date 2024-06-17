@@ -305,6 +305,11 @@ public class Inventory : MonoBehaviour
 		
 		return items;
 	}
+	
+	public void ClearSlot(int bagIndex, int slotIndex) 
+	{
+		bags[bagIndex].MyBagScript.Slots[slotIndex].Clear();
+	}
 
 	public void OnItemCountChanged(Item item)
 	{

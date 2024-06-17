@@ -5,42 +5,83 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using Unity.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SaveManager : MonoBehaviour
 {
 	[SerializeField]
 	private Item[] items;
 	
+	[SerializeField]
+	private SavedGame[] saveSlots;
+	
 	private CharButton[] equipment;
 	
+	private CharSwordButton swordButton;
+	
+	
+	private string action;
+	
 	// Start is called before the first frame update
-	void Start()
+	void Awake()
 	{
 		equipment = FindObjectsOfType<CharButton>();
-	}
+		swordButton = FindObjectOfType<CharSwordButton>();
+		
+		foreach (SavedGame saved in saveSlots) 
+		{
 
-	// Update is called once per frame
-	void Update()
+			ShowSavedFiles(saved);
+		}
+	}
+	
+	public void ShowDialogue(GameObject clickButton) 
 	{
-		if (Input.GetKeyDown(KeyCode.Q))
+		action = clickButton.name;
+		
+		switch (action) 
 		{
-			Save();
+			case "Load":
+				Load(clickButton.GetComponentInParent<SavedGame>());
+				break;
+			case "Save":
+				Save(clickButton.GetComponentInParent<SavedGame>());
+				break;
+			case "Delete":
+				Delete(clickButton.GetComponentInParent<SavedGame>());
+				break;
 		}
-		else if (Input.GetKeyDown(KeyCode.R))
+	}
+	
+	private void Delete(SavedGame savedGame) 
+	{
+		File.Delete(Application.persistentDataPath + "/" + savedGame.gameObject.name + ".dat");
+		savedGame.HideVisuals();
+	}
+
+	private void ShowSavedFiles(SavedGame savedGame) 
+	{
+		if (File.Exists(Application.persistentDataPath + "/" + savedGame.gameObject.name + ".dat")) 
 		{
-			Load();
+			BinaryFormatter bf = new();
+			FileStream file = File.Open(Application.persistentDataPath + "/" + savedGame.gameObject.name + ".dat", FileMode.Open);
+			SaveData data = (SaveData)bf.Deserialize(file);
+			file.Close();
+			savedGame.ShowInfo(data);
 		}
 	}
 
-	private void Save()
+	public void Save(SavedGame savedGame)
 	{
 		try
 		{
 			BinaryFormatter bf = new BinaryFormatter();
 
-			FileStream file = File.Open(Application.persistentDataPath + "/" + "SaveTest.dat", FileMode.Create);
+			FileStream file = File.Open(Application.persistentDataPath + "/" + savedGame.gameObject.name + ".dat", FileMode.Create);
 
 			SaveData data = new SaveData();
+			
+			data.Scene = SceneManager.GetActiveScene().name;
 			
 			SaveEquipment(data);
 			
@@ -57,6 +98,8 @@ public class SaveManager : MonoBehaviour
 			bf.Serialize(file, data);
 
 			file.Close();
+			
+			ShowSavedFiles(savedGame);
 		}
 		catch (System.Exception e)
 		{
@@ -65,13 +108,13 @@ public class SaveManager : MonoBehaviour
 	}
 	
 
-	private void Load()
+	public void Load(SavedGame savedGame)
 	{
 		try
 		{
 			BinaryFormatter bf = new BinaryFormatter();
 
-			FileStream file = File.Open(Application.persistentDataPath + "/" + "SaveTest.dat", FileMode.Open);
+			FileStream file = File.Open(Application.persistentDataPath + "/" + savedGame.gameObject.name + ".dat", FileMode.Open);
 
 			SaveData data = (SaveData)bf.Deserialize(file);
 
@@ -98,7 +141,7 @@ public class SaveManager : MonoBehaviour
 	private void SavePlayer(SaveData data)
 	{
 
-		data.MyPlayerData = new PlayerData(PlayerStats.Instance.Armor, PlayerStats.Instance.Stamina, PlayerStats.Instance.Strength, PlayerStats.Instance.Agility, PlayerStats.Instance.CritChance, PlayerStats.Instance.maxHealth,
+		data.MyPlayerData = new PlayerData(PlayerStats.Instance.Armor, PlayerStats.Instance.ArmorFromGear, PlayerStats.Instance.Stamina, PlayerStats.Instance.Strength, PlayerStats.Instance.Agility, PlayerStats.Instance.CritChance, PlayerStats.Instance.maxHealth,
 			PlayerStats.Instance.CurrentHealth, PlayerStats.Instance.Level, PlayerStats.Instance.currentExp, PlayerStats.Instance.expToLevel, 
 			PlayerStats.Instance.transform.position);
 	}
@@ -117,8 +160,21 @@ public class SaveManager : MonoBehaviour
 		{
 			if (charButton.EquippedArmor != null) 
 			{
-				data.MyEquipmentData.Add(new EquipmentData(charButton.EquippedArmor.ItemName, charButton.name));
+				data.MyEquipmentData.Add(new EquipmentData(charButton.EquippedArmor.ItemName, charButton.name, false));
 			}
+			else 
+			{
+				data.MyEquipmentData.Add(new EquipmentData(null, charButton.name, true));
+			}
+		}
+		
+		if (swordButton.EquippedSword != null) 
+		{
+			data.MySwordData = new SwordData(swordButton.EquippedSword.ItemName, swordButton.name, false);
+		}
+		else 
+		{
+			data.MySwordData = new SwordData(null, swordButton.name, true);
 		}
 	}
 	
@@ -154,8 +210,9 @@ public class SaveManager : MonoBehaviour
 	{
 		PlayerData d = data.MyPlayerData;
 
-		PlayerStats.Instance.SetInstance(d.Armor, d.Stamina, d.Strength, d.Agility, d.CritChance, d.MaxHealth, d.CurrentHealth, d.Level, d.CurrentExp, d.ExpToLevel);
-		GameController.instance.UpdateLevelUiText();
+		PlayerStats.Instance.SetInstance(d.Armor, d.ArmorFromGear, d.Stamina, d.Strength, d.Agility, d.CritChance, d.MaxHealth, d.CurrentHealth, d.Level, d.CurrentExp, d.ExpToLevel);
+		FrameManager.Instance.UpdateLevelUiText();
+		CharacterPanel.instance.UpdateStatsText();
 		PlayerStats.Instance.transform.position = new Vector2(d.MyX, d.MyY);
 
 	}
@@ -178,8 +235,29 @@ public class SaveManager : MonoBehaviour
 		{
 			CharButton cb = Array.Find(equipment, x => x.name == equipmentData.Type);
 			
-			cb.EquipArmor(Array.Find(items, x => x.ItemName == equipmentData.Title) as Armor);
+			if (equipmentData.IsEmpty) 
+			{
+				cb.DequipItem();
+			}
+			else 
+			{
+			
+				cb.EquipArmor(Array.Find(items, x => x.ItemName == equipmentData.Title) as Armor);
+				
+			}
 		}
+		
+		if (data.MySwordData.IsEmpty) 
+		{
+			swordButton.DequipItem();
+		}
+		else 
+		{
+			swordButton.EquipSword(Array.Find(items, x => x.ItemName == data.MySwordData.Title) as Sword);
+		}
+		
+		
+		CharacterPanel.instance.UpdateStatsText();	
 	}
 	
 	private void LoadInventory(SaveData data) 
@@ -190,6 +268,7 @@ public class SaveManager : MonoBehaviour
 			
 			for (int i = 0; i < itemData.StackCount; i++) 
 			{
+				Inventory.Instance.ClearSlot(itemData.BagIndex, itemData.SlotIndex);
 				Inventory.Instance.PlaceInSpecific(item, itemData.SlotIndex, itemData.BagIndex);
 			}
 		}

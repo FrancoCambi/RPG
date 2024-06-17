@@ -12,9 +12,15 @@ public class SaveData
 	
 	public List<EquipmentData> MyEquipmentData {get; set;}
 	
+	public SwordData MySwordData {get; set;}
+	
 	public List<QuestData> MyQuestData {get; set;}
 	
 	public List<QuestGiverData> MyQuestGiverData {get; set;}
+
+	public DateTime DateTime {get; set;}
+	
+	public string Scene {get; set;}
 
 	public SaveData()
 	{
@@ -22,6 +28,7 @@ public class SaveData
 		MyEquipmentData = new();
 		MyQuestData = new();
 		MyQuestGiverData = new();
+		DateTime = DateTime.Now;
 	}
 
 }
@@ -30,6 +37,7 @@ public class SaveData
 public class PlayerData
 {
 	public int Armor { get; set; }
+	public int ArmorFromGear {get; set;}
 	public int Stamina { get; set; }
 	public int Strength { get; set; }
 	public int Agility { get; set; }
@@ -42,9 +50,10 @@ public class PlayerData
 	public float MyX { get; set; }
 	public float MyY { get; set; }
 
-	public PlayerData(int armor, int stamina, int strength, int agility, float critChance, int maxHealth, int currentHealth, int level, int currentExp, int expToLevel, Vector2 position)
+	public PlayerData(int armor, int armorFromGear, int stamina, int strength, int agility, float critChance, int maxHealth, int currentHealth, int level, int currentExp, int expToLevel, Vector2 position)
 	{
 		Armor = armor;
+		ArmorFromGear = armorFromGear;
 		Stamina = stamina;
 		Strength = strength;
 		Agility = agility;
@@ -115,10 +124,30 @@ public class EquipmentData
 	
 	public string Type {get; set;}
 	
-	public EquipmentData(string title, string type) 
+	public bool IsEmpty {get; set;}
+	
+	public EquipmentData(string title, string type, bool isEmpty) 
 	{
 		Title = title;
 		Type = type;
+		IsEmpty = isEmpty;
+	}
+}
+
+[Serializable]
+public class SwordData 
+{
+	public string Title {get; set;}
+	
+	public string Type {get; set;}
+	
+	public bool IsEmpty {get; set;}
+	
+	public SwordData(string title, string type, bool isEmpty) 
+	{
+		Title = title;
+		Type = type;
+		IsEmpty = isEmpty;
 	}
 }
 

@@ -19,7 +19,7 @@ public class PlayerCurrency : MonoBehaviour
         set
         {
             goldCurrency = value;
-            GoldCurrencyScript.instance.UpdateGold();
+            GoldCurrencyScript.instance.UpdateGoldText();
         }
     }
 

@@ -21,11 +21,11 @@ public class GoldCurrencyScript : MonoBehaviour
     private void Start()
     {
         instance = this;
-        UpdateGold();
+        UpdateGoldText();
     }
 
 
-    public void UpdateGold()
+    public void UpdateGoldText()
     {
         goldText.text = PlayerCurrency.instance.MyGoldCurrency.Gold.ToString();
         silverText.text = PlayerCurrency.instance.MyGoldCurrency.Silver.ToString();

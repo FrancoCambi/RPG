@@ -60,6 +60,8 @@ public class PlayerStats : MonoBehaviour
 	private int maxDamage;
 	private int attackPower;
 	
+	private Camera mainCamera;
+	
 	private Canvas canvas;
 
 	public int Armor
@@ -83,8 +85,8 @@ public class PlayerStats : MonoBehaviour
 		}
 		set
 		{
-			maxHealth += (value - Stamina) * 10;
-			GameEventsManager.instance.playerEvents.PlayerHealthChange();
+			MaxHealth += (value - Stamina) * 10;
+			FrameManager.Instance.FillHealth();
 			stamina = value;
 		}
 	}
@@ -109,7 +111,6 @@ public class PlayerStats : MonoBehaviour
 		}
 		set
 		{
-			armor += 2 * (value - agility);
 			critChance += (float)(value - agility) / 12;
 			agility = value;
 		}
@@ -157,7 +158,19 @@ public class PlayerStats : MonoBehaviour
 
 				currentHealth = value;
 			}
-			GameEventsManager.instance.playerEvents.PlayerHealthChange();
+			FrameManager.Instance.FillHealth();
+		}
+	}
+	
+	public int MaxHealth 
+	{
+		get 
+		{
+			return maxHealth;
+		}
+		set 
+		{
+			maxHealth = value;
 		}
 	}
 
@@ -167,6 +180,11 @@ public class PlayerStats : MonoBehaviour
 		{
 			return level;
 		}
+		set 
+		{
+			level = value;
+			FrameManager.Instance.UpdateLevelUiText();
+		}
 	}
 	
 	public int CurrentExp 
@@ -175,14 +193,20 @@ public class PlayerStats : MonoBehaviour
 		{
 			return currentExp;
 		}
+		set 
+		{
+			currentExp = value;
+			FrameManager.Instance.FillExp();
+		}
 	}
 
 	public int ExpToLevel 
 	{
 		get 
 		{
-			return expToLevel;
+			return CalculateExpToLevel();
 		}
+	
 	}
 
 	public int MinDamage
@@ -222,29 +246,30 @@ public class PlayerStats : MonoBehaviour
 	{
 		canvas = GameObject.FindGameObjectWithTag("Canvas").GetComponent<Canvas>();
 		expToLevel = CalculateExpToLevel();
+		mainCamera = Camera.main;
 	}
 
-	public void SetInstance(int armor, int stamina, int strength, int agility, float critChance, int maxHealth, int currentHealth, int level, int currentExp, int expToLevel)
+	public void SetInstance(int armor, int armorFromGear, int stamina, int strength, int agility, float critChance, int maxHealth, int currentHealth, int level, int currentExp, int expToLevel)
 	{
-		Instance.armor = armor;
-		Instance.stamina = stamina;
-		Instance.strength = strength;
-		Instance.agility = agility;
-		Instance.critChance = critChance;
-		Instance.maxHealth = maxHealth;
-		Instance.currentHealth = currentHealth;
-		Instance.level = level;
-		Instance.currentExp = currentExp;
+		Instance.Armor = armor;
+		Instance.ArmorFromGear = armorFromGear;
+		Instance.Stamina = stamina;
+		Instance.Strength = strength;
+		Instance.Agility = agility;
+		Instance.CritChance = critChance;
+		Instance.MaxHealth = maxHealth;
+		Instance.CurrentHealth = currentHealth;
+		Instance.Level = level;
+		Instance.CurrentExp = currentExp;
 		Instance.expToLevel = expToLevel;
 	}
 
 	public void RecieveExp(int exp)
 	{
-		currentExp += exp;
+		CurrentExp += exp;
 		CheckForLevelUp();
 
-		GameEventsManager.instance.playerEvents.PlayerExpChange();
-		FloatingTextManager.Instance.CreateText(Camera.main.WorldToScreenPoint(gameObject.transform.position), canvas, 
+		FloatingTextManager.Instance.CreateText(mainCamera.WorldToScreenPoint(gameObject.transform.position), canvas, 
 					exp.ToString() + " Xp", FloatingTextType.XP);
 	}
 	
@@ -254,7 +279,7 @@ public class PlayerStats : MonoBehaviour
 
 		string dmgString = crit ? "Crit! " + damage.ToString() : damage.ToString();
 		
-		FloatingTextManager.Instance.CreateText(Camera.main.WorldToScreenPoint(gameObject.transform.position), canvas, 
+		FloatingTextManager.Instance.CreateText(mainCamera.WorldToScreenPoint(gameObject.transform.position), canvas, 
 					dmgString, FloatingTextType.DAMAGE);
 	}
 	
@@ -262,15 +287,15 @@ public class PlayerStats : MonoBehaviour
 	{
 		CurrentHealth += health;
 		
-		FloatingTextManager.Instance.CreateText(Camera.main.WorldToScreenPoint(gameObject.transform.position), canvas, 
+		FloatingTextManager.Instance.CreateText(mainCamera.WorldToScreenPoint(gameObject.transform.position), canvas, 
 					health.ToString(), FloatingTextType.HEAL);
 	}
 
 	private void CheckForLevelUp()
 	{
-		if (currentExp >= expToLevel)
+		if (CurrentExp >= ExpToLevel)
 		{
-			currentExp -= expToLevel; 
+			CurrentExp -= ExpToLevel; 
 			LevelUp();
 			CheckForLevelUp();
 		}
@@ -278,13 +303,14 @@ public class PlayerStats : MonoBehaviour
 
 	private void LevelUp()
 	{
-		level++;
+		Level++;
 		PlusOneStats();
-		GameController.instance.UpdateLevelUiText();
-		expToLevel = CalculateExpToLevel();
-		maxHealth = CalculateMaxHealth();
+		
+		MaxHealth = CalculateMaxHealth();
 		CurrentHealth = maxHealth;
+		
 		CharacterPanel.instance.UpdateStatsText();
+		FrameManager.Instance.FillExp();
 		
 		MessageFeedManager.instance.WriteMessage("Your level has increased!", FontSize.BIG, MessageType.Warning, 4f);
 	}
@@ -299,7 +325,7 @@ public class PlayerStats : MonoBehaviour
 	private int CalculateExpToLevel()
 	{
 
-		return (int)(100 * level * Math.Pow(level, 0.5f));
+		return (int)(100 * Level * Math.Pow(Level, 0.5f));
 	}
 
 	private int CalculateBaseHealth()

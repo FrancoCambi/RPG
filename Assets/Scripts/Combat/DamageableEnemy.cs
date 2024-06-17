@@ -18,6 +18,8 @@ public class DamageableEnemy : MonoBehaviour, IDamageable
 	private float healthBarShowTimeElapsed = 0;
 	private bool showingHealth = false;
 	private Canvas damageTextCanvas;
+	
+	private Camera mainCamera;
 
 	private bool crit;
 	public GameObject damageText;
@@ -37,7 +39,7 @@ public class DamageableEnemy : MonoBehaviour, IDamageable
 				
 				animator.SetTrigger("Hit");
 				string dmgString = crit ? "Crit! " + (health- value).ToString() : (health - value).ToString();
-				FloatingTextManager.Instance.CreateText(Camera.main.WorldToScreenPoint(gameObject.transform.position), 
+				FloatingTextManager.Instance.CreateText(mainCamera.WorldToScreenPoint(gameObject.transform.position), 
 						damageTextCanvas, dmgString, FloatingTextType.DAMAGE);
 			}
 
@@ -75,6 +77,7 @@ public class DamageableEnemy : MonoBehaviour, IDamageable
 		}
 		text = damageText.GetComponent<FadeText>();
 		damageTextCanvas = GameObject.FindGameObjectWithTag("Canvas").GetComponent<Canvas>();
+		mainCamera = Camera.main;
 	}
 
 	public void OnHit(int damage, bool crit)
