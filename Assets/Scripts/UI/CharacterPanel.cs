@@ -6,7 +6,19 @@ using UnityEngine.UI;
 
 public class CharacterPanel : MonoBehaviour
 {
-	public static CharacterPanel instance;
+	private static CharacterPanel instance;
+	
+	public static CharacterPanel Instance 
+	{
+		get 
+		{
+			if (instance == null) 
+			{
+				instance = FindObjectOfType<CharacterPanel>();
+			}
+			return instance;
+		}
+	}
 
 	[SerializeField]
 	private CanvasGroup canvasGroup;
@@ -45,7 +57,6 @@ public class CharacterPanel : MonoBehaviour
 
 	private void Start()
 	{
-		instance = this;
 		UpdateStatsText();
 	}
 
@@ -148,6 +159,27 @@ public class CharacterPanel : MonoBehaviour
 
 		statsText.text = String.Format("Level: {0}\nDamage: {1} - {2}\nStamina: {3}\nStrength: {4}\nAgility: {5}\nCrit: {6:0.00}%\nArmor: {7}\n", stats.Level, minDamage, maxDamage, stats.Stamina, stats.Strength, stats.Agility, stats.CritChance, stats.Armor);
 
+	}
+	
+	public void SetDefault() 
+	{
+		Armor defaultFoot = (Armor)Instantiate(Array.Find(SaveManager.Instance.Items, x => x.ItemName == "Apprentice Sandals"));
+		Armor defaultChest = (Armor)Instantiate(Array.Find(SaveManager.Instance.Items, x => x.ItemName == "Apprentice Chest"));
+		Armor defaultHead = (Armor)Instantiate(Array.Find(SaveManager.Instance.Items, x => x.ItemName == "Apprentice Hood"));
+		Armor defaultPants = (Armor)Instantiate(Array.Find(SaveManager.Instance.Items, x => x.ItemName == "Apprentice Pants"));
+		Armor defaultWrists = (Armor)Instantiate(Array.Find(SaveManager.Instance.Items, x => x.ItemName == "Apprentice Wristband"));
+		Armor defaultGloves = (Armor)Instantiate(Array.Find(SaveManager.Instance.Items, x => x.ItemName == "Apprentice Gloves"));
+		
+		Sword defaultSword = (Sword)Instantiate(Array.Find(SaveManager.Instance.Items, x => x.ItemName == "Apprentice Sword"));
+		
+		EquipArmor(defaultFoot);
+		EquipArmor(defaultChest);
+		EquipArmor(defaultHead);
+		EquipArmor(defaultPants);
+		EquipArmor(defaultWrists);
+		EquipArmor(defaultGloves);
+		
+		EquipSword(defaultSword);
 	}
 
 

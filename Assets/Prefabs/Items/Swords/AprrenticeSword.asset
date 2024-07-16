@@ -14,15 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   icon: {fileID: 21300000, guid: b667ae9f37259db40873da2e96249853, type: 3}
   itemName: Apprentice Sword
-  quality: 0
+  itemQuality: 0
   stackSize: 1
   itemLevel: 1
   requiredLevel: 1
   description: '"Butter knife"'
+  equipmentQuality: 3
+  upgrade: 0
+  so: {fileID: 11400000}
   minDamage: 1
   maxDamage: 3
   speed: 1.5
-  knockBackForce: 2
+  knockBackForce: 0.5
   stamina: 0
   strength: 0
   agility: 0

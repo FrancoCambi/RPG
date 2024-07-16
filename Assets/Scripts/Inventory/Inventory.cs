@@ -111,7 +111,7 @@ public class Inventory : MonoBehaviour
 	{
 		if (Input.GetKeyDown(KeyCode.K))
 		{
-			for (int i = 1; i < 10; i++)
+			for (int i = 1; i < items.Length; i++)
 			{
 				Item bag = Instantiate(items[i]);
 				AddItem(bag);
@@ -162,7 +162,7 @@ public class Inventory : MonoBehaviour
 
 		}
 
-		 return PlaceInEmpty(item);
+		return PlaceInEmpty(item);
 	}
 
 	private bool PlaceInEmpty(Item item)
@@ -196,9 +196,11 @@ public class Inventory : MonoBehaviour
 		return false;
 	}
 	
-	public void PlaceInSpecific(Item item, int slotIndex, int bagIndex) 
+	public Item PlaceInSpecific(Item item, int slotIndex, int bagIndex) 
 	{
-		bags[bagIndex].MyBagScript.Slots[slotIndex].AddItem(item);
+		Item itemIns = Instantiate(item);
+		bags[bagIndex].MyBagScript.Slots[slotIndex].AddItem(itemIns);
+		return itemIns;
 	} 
 
 
@@ -309,6 +311,23 @@ public class Inventory : MonoBehaviour
 	public void ClearSlot(int bagIndex, int slotIndex) 
 	{
 		bags[bagIndex].MyBagScript.Slots[slotIndex].Clear();
+	}
+	
+	public bool TakeItems(string name, int count) 
+	{
+		if (GetItemCount(name) >= count) 
+		{
+			Stack<Item> items = GetItems(name, count);
+			
+			foreach (Item item in items) 
+			{
+				item.Remove();
+			}
+			
+			return true;
+		}
+		
+		return false;
 	}
 
 	public void OnItemCountChanged(Item item)

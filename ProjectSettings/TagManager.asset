@@ -12,6 +12,7 @@ TagManager:
   - NPC
   - Keybind
   - Sword
+  - DeadPlayer
   layers:
   - Default
   - TransparentFX
@@ -49,6 +50,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: New Layer 1
+  - name: Enemy
+    uniqueID: 356463733
+    locked: 0
+  - name: Player
     uniqueID: 425298691
     locked: 0

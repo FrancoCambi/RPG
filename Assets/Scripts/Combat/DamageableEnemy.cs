@@ -23,11 +23,17 @@ public class DamageableEnemy : MonoBehaviour, IDamageable
 
 	private bool crit;
 	public GameObject damageText;
-	public Canvas myCanvas;
+	
+	public GameObject targetImage;
+	public CanvasGroup canvasGroupChange;
+	public CanvasGroup canvasGroupName;
 	public Image healthBar;
 	public float barActiveTime;
 	public int maxHealth;
 	
+	public int health = 1;
+
+	public bool invincible = false;
 
 
 	public int Health
@@ -37,7 +43,8 @@ public class DamageableEnemy : MonoBehaviour, IDamageable
 			if (value < health)
 			{   
 				
-				animator.SetTrigger("Hit");
+				animator.SetBool("Hit", true);
+				animator.SetBool("Attack", false);
 				string dmgString = crit ? "Crit! " + (health- value).ToString() : (health - value).ToString();
 				FloatingTextManager.Instance.CreateText(mainCamera.WorldToScreenPoint(gameObject.transform.position), 
 						damageTextCanvas, dmgString, FloatingTextType.DAMAGE);
@@ -61,9 +68,13 @@ public class DamageableEnemy : MonoBehaviour, IDamageable
 		}
 	}
 
-	public int health = 1;
-
-	public bool invincible = false;
+	public bool ShowingHealth 
+	{
+		get 
+		{
+			return showingHealth;
+		}
+	}
 
 	private void Start()
 	{
@@ -111,7 +122,8 @@ public class DamageableEnemy : MonoBehaviour, IDamageable
 	private void ShowCanvas() 
 	{
 		showingHealth = true;
-		myCanvas.gameObject.SetActive(true);
+		canvasGroupChange.alpha = 1;
+		canvasGroupName.alpha = 1;
 		healthBarShowTimeElapsed = 0;
 		
 	}
@@ -147,10 +159,12 @@ public class DamageableEnemy : MonoBehaviour, IDamageable
 
 	public void Defeated()
 	{
+		targetImage.SetActive(false);
 		enemy.IsAlive = false;
 		enemy.tag = "DeadEnemy";
 		GetComponent<Collider2D>().isTrigger = true;
-		myCanvas.gameObject.SetActive(false);
+		canvasGroupChange.alpha = 0;
+		canvasGroupName.alpha = 0;
 		animator.Play("Defeated");
 	}
 
@@ -168,7 +182,8 @@ public class DamageableEnemy : MonoBehaviour, IDamageable
 			if (healthBarShowTimeElapsed > barActiveTime)
 			{
 				showingHealth = false;
-				myCanvas.gameObject.SetActive(false);
+				canvasGroupChange.alpha = 0;
+				canvasGroupName.alpha = 0;
 			}
 		}
 	}

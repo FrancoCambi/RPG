@@ -43,22 +43,22 @@ public class CharButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
 	{
 		if (eventData.button == PointerEventData.InputButton.Left)
 		{
-			if (HandScript.instance.MyMoveable is Armor)
+			if (HandScript.Instance.MyMoveable is Armor)
 			{
-				Armor tmp = (Armor) HandScript.instance.MyMoveable;
+				Armor tmp = (Armor) HandScript.Instance.MyMoveable;
 
 				if (tmp.ArmorType == armorType)
 				{
 					EquipArmor(tmp);
-					CharacterPanel.instance.UpdateStatsText();
+					CharacterPanel.Instance.UpdateStatsText();
+					GameController.Instance.ShowTooltip(transform.position, new Vector2(0f,0f), equippedArmor);
 				}
 
-				GameController.instance.RefreshTooltip(tmp);
 			}
-			else if (HandScript.instance.MyMoveable == null && equippedArmor != null)
+			else if (HandScript.Instance.MyMoveable == null && equippedArmor != null)
 			{
-				HandScript.instance.TakeMoveable(equippedArmor);
-				CharacterPanel.instance.MySelectedButton = this;
+				HandScript.Instance.TakeMoveable(equippedArmor);
+				CharacterPanel.Instance.MySelectedButton = this;
 				icon.color = Color.grey;
 			}
 
@@ -75,15 +75,17 @@ public class CharButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
 
 			if (equippedArmor != armor)
 			{
-
-				armor.Slot.AddItem(equippedArmor);
+				if (armor.Slot != null) 
+				{
+					armor.Slot.AddItem(equippedArmor);
+				}
 				equippedArmor.LoseStats();
 			}
-			GameController.instance.RefreshTooltip(equippedArmor);
+			GameController.Instance.RefreshTooltip(equippedArmor);
 		}
 		else
 		{
-			GameController.instance.HideTooltip();
+			GameController.Instance.HideTooltip();
 		}
 
 		icon.enabled = true;
@@ -91,9 +93,9 @@ public class CharButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
 		icon.color = Color.white;
 		this.equippedArmor = armor;
 		
-		if (HandScript.instance.MyMoveable == (armor as IMoveable))
+		if (HandScript.Instance.MyMoveable == (armor as IMoveable))
 		{
-			HandScript.instance.Drop();
+			HandScript.Instance.Drop();
 		}
 	}
 
@@ -101,13 +103,13 @@ public class CharButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
 	{
 		if (equippedArmor != null)
 		{
-			GameController.instance.ShowTooltip(transform.position, new Vector2(0f,-0.15f), equippedArmor);
+			GameController.Instance.ShowTooltip(transform.position, new Vector2(0f,0f), equippedArmor);
 		}
 	}
 
 	public void OnPointerExit(PointerEventData eventData)
 	{
-		GameController.instance.HideTooltip();
+		GameController.Instance.HideTooltip();
 	}
 
 	public void DequipItem()
@@ -119,6 +121,6 @@ public class CharButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
 		}
 		icon.color = Color.white;
 		icon.sprite = defaultIcon;
-		CharacterPanel.instance.UpdateStatsText();
+		CharacterPanel.Instance.UpdateStatsText();
 	}
 }

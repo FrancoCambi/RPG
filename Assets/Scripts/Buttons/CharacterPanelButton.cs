@@ -21,7 +21,7 @@ public class CharacterPanelButton : MonoBehaviour, IPointerClickHandler, IPointe
     {
         if (eventData.button == PointerEventData.InputButton.Left)
         {
-            CharacterPanel.instance.OpenClose();
+            CharacterPanel.Instance.OpenClose();
         }
 
 

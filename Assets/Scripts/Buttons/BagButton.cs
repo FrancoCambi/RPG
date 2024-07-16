@@ -56,7 +56,7 @@ public class BagButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHandl
 
 		if (Input.GetKey(KeyCode.LeftShift))
 		{
-			HandScript.instance.TakeMoveable(Bag);
+			HandScript.Instance.TakeMoveable(Bag);
 		}
 
 		else if (eventData.button == PointerEventData.InputButton.Left)

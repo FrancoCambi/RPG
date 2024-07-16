@@ -27,9 +27,9 @@ public class GoldCurrencyScript : MonoBehaviour
 
     public void UpdateGoldText()
     {
-        goldText.text = PlayerCurrency.instance.MyGoldCurrency.Gold.ToString();
-        silverText.text = PlayerCurrency.instance.MyGoldCurrency.Silver.ToString();
-        copperText.text = PlayerCurrency.instance.MyGoldCurrency.Copper.ToString();
+        goldText.text = PlayerCurrency.Instance.MyGoldCurrency.Gold.ToString();
+        silverText.text = PlayerCurrency.Instance.MyGoldCurrency.Silver.ToString();
+        copperText.text = PlayerCurrency.Instance.MyGoldCurrency.Copper.ToString();
     }
 
 

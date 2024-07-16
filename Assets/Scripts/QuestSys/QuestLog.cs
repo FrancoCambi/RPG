@@ -181,9 +181,21 @@ public class QuestLog : MonoBehaviour
 			}
 
 			string title = quest.Title;
-
+			string onlyOneReward = string.Empty;
+			
+			if (!quest.AllRewards) 
+			{
+				onlyOneReward = "You will be able to choose one of these rewards:";
+			}
+	
 			questDescription.text = string.Format("<size=15><b>{0}</b></size>\n" +
-				"<size=10>{1}\n<size=15><b>Objectives</b></size>\n{2}</size>", title, quest.Description, objective);
+				"<size=10>{1}\n\n<size=15><b>Objectives</b></size>\n{2}</size>\n" +
+				"<size=15><b>Rewards</b></size>\n{3}", title, quest.Description, objective, onlyOneReward);
+
+			
+			RewardsManagerLog.Instance.ClearRewards();
+			RewardsManagerLog.Instance.InstantiateRewards(quest.Rewards, quest);
+			
 		}
 	}
 

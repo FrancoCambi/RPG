@@ -13,17 +13,20 @@ MonoBehaviour:
   m_Name: Sword of Kings
   m_EditorClassIdentifier: 
   icon: {fileID: -542501087, guid: 721ebece23817784c9ad847ece8ae297, type: 3}
-  itemName: Sword of Kings
-  quality: 4
+  itemName: Sword Of Kings
+  itemQuality: 4
   stackSize: 1
   itemLevel: 100
-  requiredLevel: 60
+  requiredLevel: 1
   description: 
-  minDamage: 187
-  maxDamage: 256
+  equipmentQuality: 3
+  upgrade: 0
+  so: {fileID: 11400000}
+  minDamage: 100
+  maxDamage: 100
   speed: 1.8
-  knockBackForce: 2
-  stamina: 25
-  strength: 35
-  agility: 20
-  critPlus: 2
+  knockBackForce: 0.5
+  stamina: 35
+  strength: 49
+  agility: 28
+  critPlus: 3

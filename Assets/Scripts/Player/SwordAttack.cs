@@ -1,6 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+public enum AttackDirection
+{
+	LEFT, RIGHT, UP, DOWN
+}
 
 public class SwordAttack : MonoBehaviour
 {
@@ -9,16 +13,11 @@ public class SwordAttack : MonoBehaviour
 	public Collider2D swordColliderD;
 	public Collider2D swordColliderL;
 
-
-	public enum AttackDirection
-	{
-		LEFT, RIGHT, UP, DOWN
-	}
-
 	public AttackDirection attackDirection;
 
 	public void Attack()
 	{
+		
 		switch (attackDirection)
 		{
 
@@ -71,7 +70,7 @@ public class SwordAttack : MonoBehaviour
 
 	private (int, bool) CalculateDamage()
 	{
-		Sword sword = CharacterPanel.instance.SwordButton.EquippedSword;
+		Sword sword = CharacterPanel.Instance.SwordButton.EquippedSword;
 
 		int str = PlayerStats.Instance.Strength;
 		int ap = str / 2;
@@ -93,7 +92,7 @@ public class SwordAttack : MonoBehaviour
 
 	private void OnTriggerEnter2D(Collider2D other)
 	{
-		Sword sword = CharacterPanel.instance.SwordButton.EquippedSword;
+		Sword sword = CharacterPanel.Instance.SwordButton.EquippedSword;
 
 		if (other.CompareTag("Enemy"))
 		{
@@ -109,6 +108,8 @@ public class SwordAttack : MonoBehaviour
 				(int, bool) damage = CalculateDamage();
 
 				damageableObject.OnHit(damage.Item1, damage.Item2, knockback);
+				
+				StopAttack();
 			}
 
 		}

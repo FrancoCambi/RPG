@@ -94,16 +94,16 @@ public class ActionButton : MonoBehaviour, IPointerClickHandler, IClickable
        }
        else if (eventData.button == PointerEventData.InputButton.Left)
        {
-            if (HandScript.instance.MyMoveable != null && HandScript.instance.MyMoveable is IUseable)
+            if (HandScript.Instance.MyMoveable != null && HandScript.Instance.MyMoveable is IUseable)
             {
-                SetUseable(HandScript.instance.MyMoveable as IUseable);
+                SetUseable(HandScript.Instance.MyMoveable as IUseable);
             }
-            else if (HandScript.instance.MyMoveable == null)
+            else if (HandScript.Instance.MyMoveable == null)
             {
                 if (Count > 0)
                 {
 
-                    HandScript.instance.TakeMoveable(useables.Peek() as IMoveable);
+                    HandScript.Instance.TakeMoveable(useables.Peek() as IMoveable);
                     Remove();
                 }
             }
@@ -135,12 +135,12 @@ public class ActionButton : MonoBehaviour, IPointerClickHandler, IClickable
 
     public void UpdateVisual()
     {
-        Icon.sprite = HandScript.instance.Put().Icon;
+        Icon.sprite = HandScript.Instance.Put().Icon;
         Icon.color = Color.white;
 
         if (useables.Count > 1)
         {
-            GameController.instance.UpdateStackSize(this);
+            GameController.Instance.UpdateStackSize(this);
         }
     }
 
@@ -154,7 +154,7 @@ public class ActionButton : MonoBehaviour, IPointerClickHandler, IClickable
 
                 count = useables.Count;
 
-                GameController.instance.UpdateStackSize(this);
+                GameController.Instance.UpdateStackSize(this);
             }
         }
     }
@@ -165,6 +165,6 @@ public class ActionButton : MonoBehaviour, IPointerClickHandler, IClickable
         count = 0;
         useable = null;
         Icon.color = new Color(0, 0, 0, 0);
-        GameController.instance.UpdateStackSize(this);
+        GameController.Instance.UpdateStackSize(this);
     }
 }

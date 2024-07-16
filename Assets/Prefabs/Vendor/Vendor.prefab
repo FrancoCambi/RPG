@@ -217,4 +217,102 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77400f7023b7154438caccc555d546db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  vendorWindow: {fileID: 0}
+  items:
+  - item: {fileID: 11400000, guid: 6c7d88fb55fd51042a972af66093dc1c, type: 2}
+    price:
+      gold: 0
+      silver: 0
+      copper: 0
+    quantity: 1
+    unlimited: 1
+  - item: {fileID: 11400000, guid: 506d17dfacb01314cb6621d72e5bc789, type: 2}
+    price:
+      gold: 0
+      silver: 2
+      copper: 15
+    quantity: 2
+    unlimited: 0
+  - item: {fileID: 11400000, guid: 1a38a6d90ed41204cb5dca7aa9c46424, type: 2}
+    price:
+      gold: 0
+      silver: 2
+      copper: 15
+    quantity: 5
+    unlimited: 0
+  - item: {fileID: 11400000, guid: 506d17dfacb01314cb6621d72e5bc789, type: 2}
+    price:
+      gold: 0
+      silver: 2
+      copper: 15
+    quantity: 5
+    unlimited: 0
+  - item: {fileID: 11400000, guid: 506d17dfacb01314cb6621d72e5bc789, type: 2}
+    price:
+      gold: 0
+      silver: 2
+      copper: 15
+    quantity: 5
+    unlimited: 0
+  - item: {fileID: 11400000, guid: 506d17dfacb01314cb6621d72e5bc789, type: 2}
+    price:
+      gold: 0
+      silver: 2
+      copper: 15
+    quantity: 5
+    unlimited: 0
+  - item: {fileID: 11400000, guid: 506d17dfacb01314cb6621d72e5bc789, type: 2}
+    price:
+      gold: 0
+      silver: 2
+      copper: 15
+    quantity: 5
+    unlimited: 0
+  - item: {fileID: 11400000, guid: 506d17dfacb01314cb6621d72e5bc789, type: 2}
+    price:
+      gold: 0
+      silver: 2
+      copper: 15
+    quantity: 5
+    unlimited: 0
+  - item: {fileID: 11400000, guid: 506d17dfacb01314cb6621d72e5bc789, type: 2}
+    price:
+      gold: 0
+      silver: 2
+      copper: 15
+    quantity: 5
+    unlimited: 0
+  - item: {fileID: 11400000, guid: 506d17dfacb01314cb6621d72e5bc789, type: 2}
+    price:
+      gold: 0
+      silver: 2
+      copper: 15
+    quantity: 5
+    unlimited: 0
+  - item: {fileID: 11400000, guid: 506d17dfacb01314cb6621d72e5bc789, type: 2}
+    price:
+      gold: 0
+      silver: 2
+      copper: 15
+    quantity: 5
+    unlimited: 0
+  - item: {fileID: 11400000, guid: 506d17dfacb01314cb6621d72e5bc789, type: 2}
+    price:
+      gold: 0
+      silver: 2
+      copper: 15
+    quantity: 5
+    unlimited: 0
+  - item: {fileID: 11400000, guid: 506d17dfacb01314cb6621d72e5bc789, type: 2}
+    price:
+      gold: 0
+      silver: 2
+      copper: 15
+    quantity: 5
+    unlimited: 0
+  - item: {fileID: 11400000, guid: 506d17dfacb01314cb6621d72e5bc789, type: 2}
+    price:
+      gold: 0
+      silver: 2
+      copper: 15
+    quantity: 5
+    unlimited: 0

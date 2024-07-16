@@ -4,32 +4,43 @@ using UnityEngine;
 
 public class PlayerCurrency : MonoBehaviour
 {
-    public static PlayerCurrency instance;
+	private static PlayerCurrency instance;
+	
+	public static PlayerCurrency Instance 
+	{
+		get
+		{
+			if (instance == null) 
+			{
+				instance = FindObjectOfType<PlayerCurrency>();
+			}
+			return instance;
+		}
+	}
 
 
-    [SerializeField]
-    private GoldCurrency goldCurrency;
+	[SerializeField]
+	private GoldCurrency goldCurrency;
 
-    public GoldCurrency MyGoldCurrency
-    {
-        get
-        {
-            return goldCurrency;
-        }
-        set
-        {
-            goldCurrency = value;
-            GoldCurrencyScript.instance.UpdateGoldText();
-        }
-    }
-
-    private void Start()
-    {
-        instance = this;
-    }
-
-    public void GetMoney(int g, int s, int c)
-    {
-        goldCurrency += new GoldCurrency(g, s, c);
-    }
+	public GoldCurrency MyGoldCurrency
+	{
+		get
+		{
+			return goldCurrency;
+		}
+		set
+		{
+			goldCurrency = value;
+			GoldCurrencyScript.instance.UpdateGoldText();
+		}
+	}
+	public void GetMoney(GoldCurrency gold)
+	{
+		MyGoldCurrency += gold;
+	}
+	
+	public void TakeMoney(GoldCurrency gold) 
+	{
+		MyGoldCurrency -= gold;
+	}
 }

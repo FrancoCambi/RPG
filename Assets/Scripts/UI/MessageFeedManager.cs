@@ -16,6 +16,8 @@ public class MessageFeedManager : MonoBehaviour
 	[SerializeField]
 	private GameObject messageWarningPrefab;
 	
+	private GameObject current;
+	
 	// Start is called before the first frame update
 	void Start()
 	{
@@ -24,6 +26,11 @@ public class MessageFeedManager : MonoBehaviour
 
 	public void WriteMessage(string message, FontSize fontSize, MessageType type, float time) 
 	{
+	
+		if (current != null) 
+		{
+			Destroy(current);
+		}
 		
 		if (type == MessageType.Info) 
 		{
@@ -47,6 +54,8 @@ public class MessageFeedManager : MonoBehaviour
 			goText.fontSize = GetFontSizeByType(fontSize);
 			
 			go.transform.SetAsFirstSibling();
+			
+			current = go;
 			
 		}
 		else 

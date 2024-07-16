@@ -7,56 +7,58 @@ using UnityEngine.UI;
 public class LootButton : MonoBehaviour,  IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
 
-    [SerializeField]
-    private Image icon;
+	[SerializeField]
+	private Image icon;
 
-    [SerializeField]
-    private Text title;
+	[SerializeField]
+	private Text title;
 
-    private LootWindow lootWindow;
+	private LootWindow lootWindow;
 
-    public Image Icon
-    {
-        get
-        {
-            return icon;
-        }
-    }
+	public Image Icon
+	{
+		get
+		{
+			return icon;
+		}
+	}
 
-    public Text Title
-    {
-        get
-        {
-            return title;
-        }
-    }
+	public Text Title
+	{
+		get
+		{
+			return title;
+		}
+	}
 
-    public Item Loot { get; set; }
+	public Item Loot { get; set; }
 
-    private void Awake()
-    {
-        lootWindow = GetComponentInParent<LootWindow>();
-    }
+	private void Awake()
+	{
+		lootWindow = GetComponentInParent<LootWindow>();
+	}
 
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        if (Inventory.Instance.AddItem(Loot))
-        {
-            gameObject.SetActive(false);
-            lootWindow.TakeLoot(Loot);
-            GameController.instance.HideTooltip();
-        }
+	public void OnPointerClick(PointerEventData eventData)
+	{
+		if (Inventory.Instance.EmptySlotCount > 0)
+		{
+			Item lootIns = GameController.Instance.InstantiateItemsAndEquip(Loot);
+			Inventory.Instance.AddItem(lootIns);
+			gameObject.SetActive(false);
+			lootWindow.TakeLoot(Loot);
+			GameController.Instance.HideTooltip();
+		}
 
-        
-    }
+		
+	}
 
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        GameController.instance.ShowTooltip(transform.position, new Vector2(1,0), Loot);
-    }
+	public void OnPointerEnter(PointerEventData eventData)
+	{
+		GameController.Instance.ShowTooltip(transform.position, new Vector2(1,0), Loot);
+	}
 
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        GameController.instance.HideTooltip();
-    }
+	public void OnPointerExit(PointerEventData eventData)
+	{
+		GameController.Instance.HideTooltip();
+	}
 }

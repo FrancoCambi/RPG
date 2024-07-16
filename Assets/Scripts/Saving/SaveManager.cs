@@ -5,24 +5,71 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using Unity.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class SaveManager : MonoBehaviour
 {
+	private static SaveManager instance;
+	
+	public static SaveManager Instance 
+	{
+		get 
+		{
+			if (instance == null) 
+			{
+				instance = FindObjectOfType<SaveManager>();
+			}
+			return instance;
+		}
+	}
+	
 	[SerializeField]
 	private Item[] items;
 	
 	[SerializeField]
 	private SavedGame[] saveSlots;
 	
+	[SerializeField]
+	private GameObject dialogue;
+	
+	[SerializeField]
+	private Text dialogueText;
+	
+	private SavedGame current;
+	
 	private CharButton[] equipment;
 	
 	private CharSwordButton swordButton;
 	
-	
 	private string action;
 	
-	// Start is called before the first frame update
+	private int currentLoad = -1;
+	
+	public Item[] Items 
+	{
+		get 
+		{
+			return items;
+		}
+	}
+	
+	public SavedGame[] SaveSlots 
+	{
+		get 
+		{
+			return saveSlots;
+		}
+	}
+	
+	public int CurrentLoad 
+	{
+		get 
+		{
+			return currentLoad;
+		}
+	}
+
 	void Awake()
 	{
 		equipment = FindObjectsOfType<CharButton>();
@@ -33,6 +80,28 @@ public class SaveManager : MonoBehaviour
 
 			ShowSavedFiles(saved);
 		}
+		
+	}
+	
+	private void Start() 
+	{
+		if (PlayerPrefs.HasKey("Load")) 
+		{
+			Load(saveSlots[PlayerPrefs.GetInt("Load")]);
+			PlayerPrefs.DeleteKey("Load");
+		}
+		else 
+		{
+			PlayerStats.Instance.SetDefault();
+			CharacterPanel.Instance.SetDefault();
+		}
+	}
+	
+	public void SpawnStart() 
+	{
+		SceneManager.LoadScene(0);
+		PlayerStats.Instance.SetDefault();
+		CharacterPanel.Instance.SetDefault();
 	}
 	
 	public void ShowDialogue(GameObject clickButton) 
@@ -42,15 +111,57 @@ public class SaveManager : MonoBehaviour
 		switch (action) 
 		{
 			case "Load":
-				Load(clickButton.GetComponentInParent<SavedGame>());
+				dialogueText.text = "Load Game?";
 				break;
 			case "Save":
-				Save(clickButton.GetComponentInParent<SavedGame>());
+				dialogueText.text = "Save Game?";
 				break;
 			case "Delete":
-				Delete(clickButton.GetComponentInParent<SavedGame>());
+				dialogueText.text = "Delete save?";
 				break;
 		}
+		
+		current = clickButton.GetComponentInParent<SavedGame>();
+		dialogue.SetActive(true);
+	}
+	
+	public void ExecuteAction() 
+	{
+		switch (action) 
+		{
+			case "Load":
+				LoadScene(current);
+				break;
+			case "Save":
+				Save(current);
+				break;
+			case "Delete":
+				Delete(current);
+				break;
+		}
+		
+		CloseDialogue();
+		
+	}
+	
+	private void LoadScene(SavedGame savedGame) 
+	{
+		if (File.Exists(Application.persistentDataPath + "/" + savedGame.gameObject.name + ".dat")) 
+		{
+			BinaryFormatter bf = new();
+			FileStream file = File.Open(Application.persistentDataPath + "/" + savedGame.gameObject.name + ".dat", FileMode.Open);
+			SaveData data = (SaveData)bf.Deserialize(file);
+			file.Close();
+			
+			PlayerPrefs.SetInt("Load", savedGame.Index);
+			
+			SceneManager.LoadScene(data.Scene);
+		}
+	}
+	
+	public void CloseDialogue() 
+	{
+		dialogue.SetActive(false);
 	}
 	
 	private void Delete(SavedGame savedGame) 
@@ -75,6 +186,7 @@ public class SaveManager : MonoBehaviour
 	{
 		try
 		{
+			currentLoad = savedGame.Index;
 			BinaryFormatter bf = new BinaryFormatter();
 
 			FileStream file = File.Open(Application.persistentDataPath + "/" + savedGame.gameObject.name + ".dat", FileMode.Create);
@@ -88,6 +200,8 @@ public class SaveManager : MonoBehaviour
 			SaveBags(data);
 			
 			SaveInventory(data);
+			
+			SaveCurrency(data);
 			
 			SavePlayer(data);
 			
@@ -112,8 +226,8 @@ public class SaveManager : MonoBehaviour
 	{
 		try
 		{
+			currentLoad = savedGame.Index;
 			BinaryFormatter bf = new BinaryFormatter();
-
 			FileStream file = File.Open(Application.persistentDataPath + "/" + savedGame.gameObject.name + ".dat", FileMode.Open);
 
 			SaveData data = (SaveData)bf.Deserialize(file);
@@ -123,6 +237,8 @@ public class SaveManager : MonoBehaviour
 			LoadBags(data);
 			
 			LoadInventory(data);
+			
+			LoadCurrency(data);
 
 			LoadPlayer(data);
 			
@@ -135,6 +251,8 @@ public class SaveManager : MonoBehaviour
 		catch (System.Exception e)
 		{
 			Debug.LogError("Error happened: " + e);
+			Delete(savedGame);
+			PlayerPrefs.DeleteKey("Load");
 		}
 	}
 
@@ -184,8 +302,27 @@ public class SaveManager : MonoBehaviour
 		
 		foreach (Slot slot in slots) 
 		{
-			data.MyInventoryData.Items.Add(new ItemData(slot.MyItem.ItemName, slot.Items.Count, slot.Index, slot.MyBag.MyBagIndex));
+			if (slot.MyItem is Armor) 
+			{
+				data.MyInventoryData.Items.Add(new ItemData(slot.MyItem.ItemName, slot.Items.Count, slot.Index, slot.MyBag.MyBagIndex, 
+				(slot.MyItem as Armor).EquipmentQuality, (slot.MyItem as Armor).Upgrade));
+			}
+			else if (slot.MyItem is Sword) 
+			{
+				data.MyInventoryData.Items.Add(new ItemData(slot.MyItem.ItemName, slot.Items.Count, slot.Index, slot.MyBag.MyBagIndex, 
+				(slot.MyItem as Sword).EquipmentQuality, (slot.MyItem as Sword).Upgrade));
+			}
+			else 
+			{
+				data.MyInventoryData.Items.Add(new ItemData(slot.MyItem.ItemName, slot.Items.Count, slot.Index, slot.MyBag.MyBagIndex));
+			}
+			
 		}
+	}
+	
+	private void SaveCurrency(SaveData data) 
+	{
+		data.MyCurrencyData = new CurrencyData(PlayerCurrency.Instance.MyGoldCurrency);
 	}
 	
 	private void SaveQuests(SaveData data) 
@@ -212,7 +349,7 @@ public class SaveManager : MonoBehaviour
 
 		PlayerStats.Instance.SetInstance(d.Armor, d.ArmorFromGear, d.Stamina, d.Strength, d.Agility, d.CritChance, d.MaxHealth, d.CurrentHealth, d.Level, d.CurrentExp, d.ExpToLevel);
 		FrameManager.Instance.UpdateLevelUiText();
-		CharacterPanel.instance.UpdateStatsText();
+		CharacterPanel.Instance.UpdateStatsText();
 		PlayerStats.Instance.transform.position = new Vector2(d.MyX, d.MyY);
 
 	}
@@ -257,7 +394,7 @@ public class SaveManager : MonoBehaviour
 		}
 		
 		
-		CharacterPanel.instance.UpdateStatsText();	
+		CharacterPanel.Instance.UpdateStatsText();	
 	}
 	
 	private void LoadInventory(SaveData data) 
@@ -269,9 +406,26 @@ public class SaveManager : MonoBehaviour
 			for (int i = 0; i < itemData.StackCount; i++) 
 			{
 				Inventory.Instance.ClearSlot(itemData.BagIndex, itemData.SlotIndex);
-				Inventory.Instance.PlaceInSpecific(item, itemData.SlotIndex, itemData.BagIndex);
+				Item itemIns = Inventory.Instance.PlaceInSpecific(item, itemData.SlotIndex, itemData.BagIndex);
+			
+				if (itemIns is Armor) 
+				{
+					(itemIns as Armor).EquipmentQuality = itemData.EquipmentQuality;
+					(itemIns as Armor).Upgrade = itemData.Upgrade;
+				}
+				else if (itemIns is Sword)
+				{
+					(itemIns as Sword).EquipmentQuality = itemData.EquipmentQuality;
+					(itemIns as Sword).Upgrade = itemData.Upgrade;
+					
+				}
 			}
 		}
+	}
+	
+	private void LoadCurrency(SaveData data) 
+	{
+		PlayerCurrency.Instance.GetMoney(data.MyCurrencyData.Gold);
 	}
 	
 	private void LoadQuests(SaveData data) 
@@ -302,4 +456,5 @@ public class SaveManager : MonoBehaviour
 			questGiver.UpdateQuestStatus();
 		}
 	}
+	
 }

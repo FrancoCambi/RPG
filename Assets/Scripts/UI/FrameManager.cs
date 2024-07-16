@@ -51,7 +51,7 @@ public class FrameManager : MonoBehaviour
 
 			percentage = (int)((float)currentExp / expToLevel * 100);
 		}
-		xpText.text = currentExp.ToString() + "/" + expToLevel.ToString() + " " + percentage.ToString() + " %";
+		xpText.text = currentExp.ToString() + "/" + expToLevel.ToString() + " " +  "(" + percentage.ToString() + " %" + ")";
 	
 
 

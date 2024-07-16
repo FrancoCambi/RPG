@@ -39,17 +39,17 @@ public class CharSwordButton : MonoBehaviour, IPointerClickHandler, IPointerEnte
 	{
 		if (eventData.button == PointerEventData.InputButton.Left)
 		{
-			if (HandScript.instance.MyMoveable is Sword)
+			if (HandScript.Instance.MyMoveable is Sword)
 			{
-				Sword tmp = (Sword)HandScript.instance.MyMoveable;
+				Sword tmp = (Sword)HandScript.Instance.MyMoveable;
 				EquipSword(tmp);
-				CharacterPanel.instance.UpdateStatsText();
-				GameController.instance.RefreshTooltip(tmp);
+				CharacterPanel.Instance.UpdateStatsText();
+				GameController.Instance.ShowTooltip(transform.position, new Vector2(0f,0f), equippedSword);
 			}
-			else if (HandScript.instance.MyMoveable == null && equippedSword != null)
+			else if (HandScript.Instance.MyMoveable == null && equippedSword != null)
 			{
-				HandScript.instance.TakeMoveable(equippedSword);
-				CharacterPanel.instance.MySelectedSwordButton = this;
+				HandScript.Instance.TakeMoveable(equippedSword);
+				CharacterPanel.Instance.MySelectedSwordButton = this;
 				icon.color = Color.grey;
 			}
 
@@ -65,16 +65,18 @@ public class CharSwordButton : MonoBehaviour, IPointerClickHandler, IPointerEnte
 		{
 			if (equippedSword != sword)
 			{
-
-				sword.Slot.AddItem(equippedSword);
+				if (sword.Slot != null) 
+				{
+					sword.Slot.AddItem(equippedSword);
+				}
 				equippedSword.LoseStats();
 			}
 
-			GameController.instance.RefreshTooltip(equippedSword);
+			GameController.Instance.RefreshTooltip(equippedSword);
 		}
 		else
 		{
-			GameController.instance.HideTooltip();
+			GameController.Instance.HideTooltip();
 		}
 
 
@@ -84,9 +86,9 @@ public class CharSwordButton : MonoBehaviour, IPointerClickHandler, IPointerEnte
 		this.equippedSword = sword;
 		sword.GetStats();
 		
-		if (HandScript.instance.MyMoveable == (sword as IMoveable))
+		if (HandScript.Instance.MyMoveable == (sword as IMoveable))
 		{
-			HandScript.instance.Drop();
+			HandScript.Instance.Drop();
 		}
 
 	}
@@ -95,13 +97,13 @@ public class CharSwordButton : MonoBehaviour, IPointerClickHandler, IPointerEnte
 	{
 		if (equippedSword != null)
 		{
-			GameController.instance.ShowTooltip(transform.position, new Vector2(0f, -0.15f), equippedSword);
+			GameController.Instance.ShowTooltip(transform.position, new Vector2(0f, 0f), equippedSword);
 		}
 	}
 
 	public void OnPointerExit(PointerEventData eventData)
 	{
-		GameController.instance.HideTooltip();
+		GameController.Instance.HideTooltip();
 	}
 
 	public void DequipItem()
@@ -114,6 +116,6 @@ public class CharSwordButton : MonoBehaviour, IPointerClickHandler, IPointerEnte
 		
 		icon.color = Color.white;
 		icon.sprite = defaultIcon;
-		CharacterPanel.instance.UpdateStatsText();
+		CharacterPanel.Instance.UpdateStatsText();
 	}
 }

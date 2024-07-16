@@ -27,6 +27,15 @@ public class Quest : ScriptableObject
 	private int xp;
 	
 	[SerializeField]
+	private GoldCurrency gold;
+	
+	[SerializeField]
+	private Reward[] rewards;
+	
+	[SerializeField]
+	private bool allRewards;
+	
+	[SerializeField]
 	private bool repeteable;
 
 	public bool IsComplete
@@ -118,6 +127,30 @@ public class Quest : ScriptableObject
 		}
 	}
 	
+	public GoldCurrency Gold 
+	{
+		get 
+		{
+			return gold;
+		}
+	}
+	
+	public Reward[] Rewards 
+	{
+		get
+		{
+			return rewards;
+		}
+	}
+	
+	public bool AllRewards 
+	{
+		get 
+		{
+			return allRewards;
+		}
+	}
+	
 	public void Reset() 
 	{
 		foreach (CollectObjective o in collectObjectives) 
@@ -190,6 +223,7 @@ public class CollectObjective : Objective
 	{
 		if (Type.ToLower() == item.ItemName.ToLower())
 		{
+			
 			CurrentAmount = Inventory.Instance.GetItemCount(item.ItemName);
 			
 			if (CurrentAmount <= Amount) 

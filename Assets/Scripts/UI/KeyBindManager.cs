@@ -40,7 +40,7 @@ public class KeyBindManager : MonoBehaviour
 		if (!currentDictionary.ContainsKey(key))
 		{
 			currentDictionary.Add(key, (keyBind, modifier));
-			GameController.instance.UpdateKeyText(key, keyBind, modifier);
+			GameController.Instance.UpdateKeyText(key, keyBind, modifier);
 		}
 		else if (currentDictionary.ContainsValue((keyBind, modifier)))
 		{
@@ -48,13 +48,13 @@ public class KeyBindManager : MonoBehaviour
 
 			currentDictionary[myKey] = (KeyCode.None, EventModifiers.None);
 
-			GameController.instance.UpdateKeyText(myKey, KeyCode.None, EventModifiers.None);
+			GameController.Instance.UpdateKeyText(myKey, KeyCode.None, EventModifiers.None);
 
 
 		}
 
 		currentDictionary[key] = (keyBind, modifier);
-		GameController.instance.UpdateKeyText(key, keyBind, modifier);
+		GameController.Instance.UpdateKeyText(key, keyBind, modifier);
 		bindName = string.Empty;
 	}
 

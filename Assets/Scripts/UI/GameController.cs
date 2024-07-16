@@ -11,7 +11,19 @@ using UnityEngine.UI;
 public enum GameState { FreeRoam, Dialog, Config}
 public class GameController : MonoBehaviour
 {
-	public static GameController instance;
+	private static GameController instance;
+	
+	public static GameController Instance 
+	{
+		get 
+		{
+			if (instance == null) 
+			{
+				instance = FindObjectOfType<GameController>();
+			}
+			return instance;
+		}
+	}
 
 	[SerializeField]
 	private PlayerController playerController;
@@ -53,10 +65,7 @@ public class GameController : MonoBehaviour
 			if (state == GameState.Dialog)
 				state = GameState.FreeRoam;
 		};
-
-
-
-		instance = this;
+		
 		tooltipText = tooltip.GetComponentInChildren<Text>();
 
 
@@ -82,11 +91,13 @@ public class GameController : MonoBehaviour
 			if (AnyUiOpen())
 			{
 				Inventory.Instance.Close();
-				CharacterPanel.instance.Close();
+				CharacterPanel.Instance.Close();
 				VendorWindow.instance.Close();
 				LootWindow.instance.Close();
 				QuestLog.Instance.Close();
 				QuestGiverWindow.instance.Close();
+				BOPWindow.Instance.Close();
+				BORWindow.Instance.Close();
 				MainMenu.Instance.CloseKeybinds();
 				MainMenu.Instance.CloseSaving();
 			}
@@ -105,7 +116,7 @@ public class GameController : MonoBehaviour
 
 	   if (Input.GetKeyDown(KeyCode.P))
 	   {
-		   CharacterPanel.instance.OpenClose();
+		   CharacterPanel.Instance.OpenClose();
 	   }
 	   
 	   if (Input.GetKeyDown(KeyCode.L)) 
@@ -118,9 +129,9 @@ public class GameController : MonoBehaviour
 
 	   // DEBUG
 
-	   if (Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.G))
+	   if (Input.GetKeyDown(KeyCode.H))
 	   {
-		   PlayerCurrency.instance.MyGoldCurrency += new GoldCurrency(0,375,0);
+		   PlayerCurrency.Instance.MyGoldCurrency += new GoldCurrency(0,375,0);
 
 	   }
 
@@ -133,9 +144,9 @@ public class GameController : MonoBehaviour
 
 	private bool AnyUiOpen()
 	{
-		return Inventory.Instance.IsOpen || CharacterPanel.instance.IsOpen || LootWindow.instance.IsOpen 
+		return Inventory.Instance.IsOpen || CharacterPanel.Instance.IsOpen || LootWindow.instance.IsOpen 
 			   || VendorWindow.instance.IsOpen || QuestLog.Instance.IsOpen || QuestGiverWindow.instance.IsOpen
-			   || MainMenu.Instance.AnyOpenBesidesMain();
+			   || BOPWindow.Instance.IsOpen || BOPWindow.Instance.IsOpen || MainMenu.Instance.AnyOpenBesidesMain();
 	}
 
 	private void ClickTarget()
@@ -146,7 +157,7 @@ public class GameController : MonoBehaviour
 
 			if (hit.collider != null && state == GameState.FreeRoam)
 			{
-				playerController.Interact();
+				playerController.Interact(hit.transform.tag);
 			}
 		}
 	}
@@ -276,5 +287,25 @@ public class GameController : MonoBehaviour
 	{
 		Array.Find(actionButtons, x => x.gameObject.name == buttonName).OnClick();
 	}
+	
+	public Item InstantiateItemsAndEquip(Item item) 
+	{
+		Item itemIns = Instantiate(item);
+		
+		if (itemIns is Armor) 
+		{
+			(itemIns as Armor).SetRandomQuality();
+		}
+		else if (itemIns is Sword) 
+		{
+			(itemIns as Sword).SetRandomQuality();
+		}
+		
+		return itemIns;
+	}
 
+	public Item GetItem(string itemName) 
+	{
+		return Array.Find(SaveManager.Instance.Items, x => x.ItemName == itemName);
+	}
 }

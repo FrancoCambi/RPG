@@ -71,6 +71,11 @@ public class DamageableCharacter : MonoBehaviour, IDamageable
 			PlayerStats.Instance.RecieveDamage(CalculateDamage(damage), crit);
 
 			rb.AddForce(knockback, ForceMode2D.Impulse);
+			
+			if (PlayerStats.Instance.CurrentHealth <= 0) 
+			{
+				Defeated();
+			}
 
 			if (isInvincible)
 			{
@@ -81,12 +86,24 @@ public class DamageableCharacter : MonoBehaviour, IDamageable
 
 	public void Defeated()
 	{
+		animator.ResetTrigger("Hit");
 		animator.SetTrigger("Defeated");
 	}
 
-	public void RemoveEnemy()
+	public void Respawn()
 	{
-		Destroy(gameObject);
+		if (SaveManager.Instance.CurrentLoad != -1) 
+		{
+			SaveManager.Instance.Load(SaveManager.Instance.SaveSlots[SaveManager.Instance.CurrentLoad]);
+		}
+		else 
+		{
+			SaveManager.Instance.SpawnStart();
+		}
+		animator.ResetTrigger("Defeated");
+		animator.ResetTrigger("Hit");
+		
+		
 	}
 
 	private int CalculateDamage(int value)

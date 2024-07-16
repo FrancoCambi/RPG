@@ -13,11 +13,21 @@ MonoBehaviour:
   m_Name: Hp
   m_EditorClassIdentifier: 
   title: Gather health potions
-  description: asdasd
+  description: asdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasd
   collectObjectives:
   - amount: 2
     type: Healing Potion
   killObjectives: []
   level: 7
   xp: 200
-  repeteable: 0
+  gold:
+    gold: 1
+    silver: 15
+    copper: 78
+  rewards:
+  - item: {fileID: 11400000, guid: 506d17dfacb01314cb6621d72e5bc789, type: 2}
+    count: 1
+  - item: {fileID: 11400000, guid: 6c7d88fb55fd51042a972af66093dc1c, type: 2}
+    count: 1
+  allRewards: 0
+  repeteable: 1

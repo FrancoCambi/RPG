@@ -24,34 +24,34 @@ public class PlayerStats : MonoBehaviour
 	[Header("Stats")]
 
 	[SerializeField]
-	private int armor = 60;
+	private int armor;
 
 	[SerializeField]
-	private int stamina = 5;
+	private int stamina;
 
 	[SerializeField]
-	private int strength = 5;
+	private int strength;
 
 	[SerializeField]
-	private int agility = 5;
+	private int agility;
 
 	[SerializeField]
-	private float critChance = 5f;
+	private float critChance;
 
 	[Header("Real")]
 
-	public int maxHealth = 75;
+	public int maxHealth;
 
 	[SerializeField]
-	private int currentHealth = 75;
+	private int currentHealth;
 
 	[SerializeField]
-	private int level = 1;
+	private int level;
 
-	public int currentExp = 0;
-	public int expToLevel = 100;
+	public int currentExp;
+	public int expToLevel;
 
-	private int baseArmor = 50;
+	private int baseArmor;
 	private int armorFromGear = 0;
 	private float baseHealthGrowthMultiplier = 1.02f;
 	private int critCap = 45;
@@ -86,8 +86,8 @@ public class PlayerStats : MonoBehaviour
 		set
 		{
 			MaxHealth += (value - Stamina) * 10;
-			FrameManager.Instance.FillHealth();
 			stamina = value;
+			FrameManager.Instance.FillHealth();
 		}
 	}
 
@@ -166,7 +166,7 @@ public class PlayerStats : MonoBehaviour
 	{
 		get 
 		{
-			return maxHealth;
+			return CalculateBaseHealth() + (Stamina * 10);
 		}
 		set 
 		{
@@ -213,7 +213,7 @@ public class PlayerStats : MonoBehaviour
 	{
 		get
 		{ 
-			return CharacterPanel.instance.SwordButton.EquippedSword.MinDamage + AttackPower;
+			return CharacterPanel.Instance.SwordButton.EquippedSword.MinDamage + AttackPower;
 		}
 		set
 		{
@@ -225,7 +225,7 @@ public class PlayerStats : MonoBehaviour
 	{
 		get
 		{
-			return CharacterPanel.instance.SwordButton.EquippedSword.MaxDamage + AttackPower;
+			return CharacterPanel.Instance.SwordButton.EquippedSword.MaxDamage + AttackPower;
 		}
 
 		set
@@ -245,7 +245,6 @@ public class PlayerStats : MonoBehaviour
 	private void Start()
 	{
 		canvas = GameObject.FindGameObjectWithTag("Canvas").GetComponent<Canvas>();
-		expToLevel = CalculateExpToLevel();
 		mainCamera = Camera.main;
 	}
 
@@ -262,6 +261,19 @@ public class PlayerStats : MonoBehaviour
 		Instance.Level = level;
 		Instance.CurrentExp = currentExp;
 		Instance.expToLevel = expToLevel;
+	}
+	
+	public void SetDefault() 
+	{
+		Armor = 60;
+		Stamina = 5;
+		Strength = 5;
+		Agility = 5;
+		CritChance = 5f;
+		CurrentHealth = MaxHealth;
+		Level = 1;
+		CurrentExp = 0;
+		expToLevel = CalculateExpToLevel();
 	}
 
 	public void RecieveExp(int exp)
@@ -309,7 +321,7 @@ public class PlayerStats : MonoBehaviour
 		MaxHealth = CalculateMaxHealth();
 		CurrentHealth = maxHealth;
 		
-		CharacterPanel.instance.UpdateStatsText();
+		CharacterPanel.Instance.UpdateStatsText();
 		FrameManager.Instance.FillExp();
 		
 		MessageFeedManager.instance.WriteMessage("Your level has increased!", FontSize.BIG, MessageType.Warning, 4f);

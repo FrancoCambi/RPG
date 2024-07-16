@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   icon: {fileID: 284022349, guid: 43b50ce40ad19cc48a57494d98a72bfa, type: 3}
   itemName: Healing Potion
-  quality: 0
+  itemQuality: 0
   stackSize: 5
   itemLevel: 15
   requiredLevel: 12

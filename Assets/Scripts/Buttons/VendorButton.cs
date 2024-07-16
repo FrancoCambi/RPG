@@ -49,7 +49,7 @@ public class VendorButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
         {
             icon.color = Color.white;
             priceText.color = Color.white;
-            itemNameText.text = string.Format("<color={0}>{1}</color>", QualityColor.Colors[item.Item.Quality], item.Item.ItemName);
+            itemNameText.text = string.Format("<color={0}>{1}</color>", ItemQualityColor.Colors[item.Item.ItemQuality], item.Item.ItemName);
 
         }
         else
@@ -82,7 +82,7 @@ public class VendorButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if ((myItem.Quantity > 0 || myItem.Unlimited) && (PlayerCurrency.instance.MyGoldCurrency >= myItem.Price) && Inventory.Instance.AddItem(Instantiate(myItem.Item)))
+        if ((myItem.Quantity > 0 || myItem.Unlimited) && (PlayerCurrency.Instance.MyGoldCurrency >= myItem.Price) && Inventory.Instance.AddItem(Instantiate(myItem.Item)))
         {
             BuyItem();
         }
@@ -90,17 +90,17 @@ public class VendorButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHa
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        GameController.instance.ShowTooltip(transform.position, new Vector2(1, 0), myItem.Item);
+        GameController.Instance.ShowTooltip(transform.position, new Vector2(1, 0), myItem.Item);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        GameController.instance.HideTooltip();
+        GameController.Instance.HideTooltip();
     }
 
     private void BuyItem()
     {
-        PlayerCurrency.instance.MyGoldCurrency -= myItem.Price;
+        PlayerCurrency.Instance.MyGoldCurrency -= myItem.Price;
 
         if (!myItem.Unlimited)
         {

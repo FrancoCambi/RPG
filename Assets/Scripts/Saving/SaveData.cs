@@ -10,6 +10,8 @@ public class SaveData
 	
 	public InventoryData MyInventoryData {get; set;}
 	
+	public CurrencyData MyCurrencyData {get; set;}
+	
 	public List<EquipmentData> MyEquipmentData {get; set;}
 	
 	public SwordData MySwordData {get; set;}
@@ -79,12 +81,18 @@ public class ItemData
 	
 	public int BagIndex {get; set;}
 	
-	public ItemData(string title, int stackCount = 0, int slotIndex = 0, int bagIndex = 0) 
+	public EquipmentQuality EquipmentQuality {get; set;}
+	
+	public int Upgrade {get; set;}
+	
+	public ItemData(string title, int stackCount = 0, int slotIndex = 0, int bagIndex = 0, EquipmentQuality equipmentQuality = EquipmentQuality.None, int upgrade = 0)
 	{
 		Title = title;
 		StackCount = stackCount;
 		SlotIndex = slotIndex;
 		BagIndex = bagIndex;
+		EquipmentQuality = equipmentQuality;
+		Upgrade = upgrade;
 	}
 }
 
@@ -94,11 +102,23 @@ public class InventoryData
 	public List<BagData> Bags {get; set;}
 	
 	public List<ItemData> Items {get; set;}
-	
+
 	public InventoryData() 
 	{
 		Bags = new();
 		Items = new();
+	}
+}
+
+[Serializable]
+public class CurrencyData 
+{
+	public GoldCurrency Gold {get; set;}
+	
+	
+	public CurrencyData(GoldCurrency gold) 
+	{
+		Gold = gold;
 	}
 }
 

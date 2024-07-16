@@ -173,25 +173,25 @@ public class Slot : MonoBehaviour, IPointerClickHandler, IClickable, IPointerEnt
 			if (Inventory.Instance.FromSlot == null && !IsEmpty)
 			{
 
-				if (HandScript.instance.MyMoveable != null)
+				if (HandScript.Instance.MyMoveable != null)
 				{
-					if (HandScript.instance.MyMoveable is Armor)
+					if (HandScript.Instance.MyMoveable is Armor)
 					{
-						if (MyItem is Armor && (MyItem as Armor).ArmorType == (HandScript.instance.MyMoveable as Armor).ArmorType)
+						if (MyItem is Armor && (MyItem as Armor).ArmorType == (HandScript.Instance.MyMoveable as Armor).ArmorType)
 						{
 							(MyItem as Armor).Equip();
-							GameController.instance.RefreshTooltip(HandScript.instance.MyMoveable as IDescribable);
-							HandScript.instance.Drop();
+							GameController.Instance.RefreshTooltip(HandScript.Instance.MyMoveable as IDescribable);
+							HandScript.Instance.Drop();
 
 						}
 					}
-					else if (HandScript.instance.MyMoveable is Sword)
+					else if (HandScript.Instance.MyMoveable is Sword)
 					{
 						if (MyItem is Sword)
 						{
 							(MyItem as Sword).Equip();
-							GameController.instance.RefreshTooltip(HandScript.instance.MyMoveable as IDescribable);
-							HandScript.instance.Drop();
+							GameController.Instance.RefreshTooltip(HandScript.Instance.MyMoveable as IDescribable);
+							HandScript.Instance.Drop();
 
 						}
 					}
@@ -199,40 +199,42 @@ public class Slot : MonoBehaviour, IPointerClickHandler, IClickable, IPointerEnt
 				else
 				{
 
-					HandScript.instance.TakeMoveable(MyItem as IMoveable);
+					HandScript.Instance.TakeMoveable(MyItem as IMoveable);
 					Inventory.Instance.FromSlot = this;
 				}
 
 			}
 			else if (Inventory.Instance.FromSlot == null && IsEmpty)
 			{
-				if (HandScript.instance.MyMoveable is Bag)
+				if (HandScript.Instance.MyMoveable is Bag)
 				{
-					Bag bag = (Bag)HandScript.instance.MyMoveable;
+					Bag bag = (Bag)HandScript.Instance.MyMoveable;
 					if (bag.MyBagScript != MyBag && Inventory.Instance.EmptySlotCount - bag.SlotsCount > 0)
 					{
 						AddItem(bag);
 						bag.MyBagButton.RemoveBag();
-						HandScript.instance.Drop();
+						HandScript.Instance.Drop();
 
 					}
 
 				}
-				else if (HandScript.instance.MyMoveable is Armor)
+				else if (HandScript.Instance.MyMoveable is Armor)
 				{
-					Armor armor = (Armor)HandScript.instance.MyMoveable;
+					Armor armor = (Armor)HandScript.Instance.MyMoveable;
 					AddItem(armor);
-					CharacterPanel.instance.MySelectedButton.DequipItem();
-					HandScript.instance.Drop();
+					CharacterPanel.Instance.MySelectedButton.DequipItem();
+					HandScript.Instance.Drop();
+					GameController.Instance.ShowTooltip(transform.position, new Vector2(1f,0f), armor);
 
 
 				}
-				else if (HandScript.instance.MyMoveable is Sword)
+				else if (HandScript.Instance.MyMoveable is Sword)
 				{
-					Sword sword = (Sword)HandScript.instance.MyMoveable;
+					Sword sword = (Sword)HandScript.Instance.MyMoveable;
 					AddItem(sword);
-					CharacterPanel.instance.MySelectedSwordButton.DequipItem();
-					HandScript.instance.Drop();
+					CharacterPanel.Instance.MySelectedSwordButton.DequipItem();
+					HandScript.Instance.Drop();
+					GameController.Instance.ShowTooltip(transform.position, new Vector2(1f,0f), sword);
 				}
 
 			}
@@ -240,13 +242,14 @@ public class Slot : MonoBehaviour, IPointerClickHandler, IClickable, IPointerEnt
 			{
 				if (PutItemBack() || MergeItems(Inventory.Instance.FromSlot) || SwapItems(Inventory.Instance.FromSlot) || AddItems(Inventory.Instance.FromSlot.items))
 				{
-					HandScript.instance.Drop();
+					HandScript.Instance.Drop();
 					Inventory.Instance.FromSlot = null;
+					GameController.Instance.RefreshTooltip(items.Peek());
 				}
 			}
 		}
 
-		if (eventData.button == PointerEventData.InputButton.Right && HandScript.instance.MyMoveable == null)
+		if (eventData.button == PointerEventData.InputButton.Right && HandScript.Instance.MyMoveable == null)
 		{
 			UseItem();
 		}
@@ -270,7 +273,8 @@ public class Slot : MonoBehaviour, IPointerClickHandler, IClickable, IPointerEnt
 
 	public bool StackItem(Item item)
 	{
-		if (!IsEmpty && item.name == MyItem.name && items.Count < MyItem.StackSize)
+		
+		if (!IsEmpty && item.ItemName == MyItem.ItemName && items.Count < MyItem.StackSize)
 		{
 			items.Push(item);
 			item.Slot = this;
@@ -298,7 +302,7 @@ public class Slot : MonoBehaviour, IPointerClickHandler, IClickable, IPointerEnt
 		{
 			return false;
 		}
-		if (from.MyItem.GetType() != MyItem.GetType() || from.Count + Count > MyItem.StackSize)
+		if (from.MyItem.ItemName != MyItem.ItemName || from.Count + Count > MyItem.StackSize)
 		{
 			ObservableStack<Item> tmpFrom = new(from.items);
 
@@ -319,7 +323,7 @@ public class Slot : MonoBehaviour, IPointerClickHandler, IClickable, IPointerEnt
 		{
 			return false;
 		}
-		if (from.MyItem.GetType() == MyItem.GetType() && !IsFull)
+		if (from.MyItem.ItemName == MyItem.ItemName && !IsFull)
 		{
 			int free = MyItem.StackSize - Count;
 
@@ -337,19 +341,19 @@ public class Slot : MonoBehaviour, IPointerClickHandler, IClickable, IPointerEnt
 
 	private void UpdateSlot()
 	{
-		GameController.instance.UpdateStackSize(this);
+		GameController.Instance.UpdateStackSize(this);
 	}
 
 	public void OnPointerEnter(PointerEventData eventData)
 	{
 		if (!IsEmpty)
 		{
-			GameController.instance.ShowTooltip(transform.position,new Vector2(1f,-0.15f), MyItem);
+			GameController.Instance.ShowTooltip(transform.position,new Vector2(1f, 0f), MyItem);
 		}
 	}
 
 	public void OnPointerExit(PointerEventData eventData)
 	{
-		GameController.instance.HideTooltip();
+		GameController.Instance.HideTooltip();
 	}
 }
