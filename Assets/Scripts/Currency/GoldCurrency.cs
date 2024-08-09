@@ -165,11 +165,55 @@ public class GoldCurrency
 
 		return totalACopper <= totalBCopper;
 	}
+	
+	public static bool operator <(GoldCurrency a, GoldCurrency b)
+	{
+		if (a.Free && b.Free) 
+		{
+			return true;
+		}
+		
+		else if (a.Free)
+		{
+			return true;
+		}
+		else if (b.Free)
+		{
+			return false;
+		}
 
-    public override string ToString()
-    {
-        return string.Format("{0}g {1}s {2}c", gold, silver, copper);
-    }
+		int totalACopper = a.Gold * 10000 + a.Silver * 100 + a.Copper;
+		int totalBCopper = b.Gold * 10000 + b.Silver * 100 + b.Copper;
+
+		return totalACopper < totalBCopper;
+	}
+	
+		public static bool operator >(GoldCurrency a, GoldCurrency b)
+	{
+		if (a.Free && b.Free) 
+		{
+			return true;
+		}
+		
+		else if (a.Free)
+		{
+			return true;
+		}
+		else if (b.Free)
+		{
+			return false;
+		}
+
+		int totalACopper = a.Gold * 10000 + a.Silver * 100 + a.Copper;
+		int totalBCopper = b.Gold * 10000 + b.Silver * 100 + b.Copper;
+
+		return totalACopper > totalBCopper;
+	}
+
+	public override string ToString()
+	{
+		return string.Format("{0}g {1}s {2}c", gold, silver, copper);
+	}
 
 
 }

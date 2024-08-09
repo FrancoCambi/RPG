@@ -22,19 +22,15 @@ public class DamageableEnemy : MonoBehaviour, IDamageable
 	private Camera mainCamera;
 
 	private bool crit;
+	public EnemyManager manager;
 	public GameObject damageText;
-	
 	public GameObject targetImage;
 	public CanvasGroup canvasGroupChange;
 	public CanvasGroup canvasGroupName;
 	public Image healthBar;
 	public float barActiveTime;
 	public int maxHealth;
-	
 	public int health = 1;
-
-	public bool invincible = false;
-
 
 	public int Health
 	{
@@ -73,6 +69,18 @@ public class DamageableEnemy : MonoBehaviour, IDamageable
 		get 
 		{
 			return showingHealth;
+		}
+	}
+	
+	public EnemyManager Manager 
+	{
+		get 
+		{
+			return manager;
+		}
+		set
+		{
+			manager = value;
 		}
 	}
 
@@ -170,8 +178,11 @@ public class DamageableEnemy : MonoBehaviour, IDamageable
 
 	public void RemoveEnemy()
 	{
+		manager.StartRespawnEnemy(enemy.GetRandomPointInsideCircunference(enemy.WanderZone));
 		Destroy(gameObject);
+		
 	}
+	
 
 	public void FixedUpdate()
 	{

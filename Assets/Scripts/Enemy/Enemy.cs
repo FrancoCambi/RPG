@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Numerics;
 using TMPro;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEditor.AnimatedValues;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Vector2 = UnityEngine.Vector2;
+using Vector3 = UnityEngine.Vector3;
 
 public class Enemy : MonoBehaviour, IInteractable
 {
@@ -22,7 +25,7 @@ public class Enemy : MonoBehaviour, IInteractable
 	private CircleCollider2D wanderZone;
 	
 	[SerializeField]
-	private float wanderCd;
+	private int maxWanderCd;
 
 	[SerializeField]
 	private Collider2D lootCol;
@@ -63,7 +66,10 @@ public class Enemy : MonoBehaviour, IInteractable
 	private float attackCd;
 	
 	[SerializeField]
-	private float moveSpeed = 1f;
+	private float moveSpeed;
+	
+	[SerializeField]
+	private float wanderSpeed; 
 
 	[Header("Loot")]
 	
@@ -81,7 +87,7 @@ public class Enemy : MonoBehaviour, IInteractable
 	
 	private bool justAttacked = false;
 	
-	private bool moving = false;
+	private bool wanderAgain = true;
 	
 	Vector3 wanderPoint;
 	
@@ -97,7 +103,11 @@ public class Enemy : MonoBehaviour, IInteractable
 		set
 		{
 			isAlive = value;
-			lootCol.enabled = true;
+			if (isAlive == false) 
+			{
+				lootCol.enabled = true;
+				StopCoroutine(nameof(Wander));
+			}
 		}
 	}
 	
@@ -140,6 +150,18 @@ public class Enemy : MonoBehaviour, IInteractable
 			return experiencePlus;
 		}
 	}
+	
+	public CircleCollider2D WanderZone 
+	{
+		get 
+		{
+			return wanderZone;
+		}
+		set 
+		{
+			wanderZone = value;
+		}
+	}
  
 
 	void Start() 
@@ -149,7 +171,6 @@ public class Enemy : MonoBehaviour, IInteractable
 		animator = GetComponent<Animator>();
 		levelText.text = level.ToString();
 		nameText.text = enemyName;
-		wanderZoneCentre = transform.TransformPoint(wanderZone.offset);
 	}
 
 	void FixedUpdate() 
@@ -175,45 +196,38 @@ public class Enemy : MonoBehaviour, IInteractable
 		}
 		else if (aggroZone.detectedObjs.Count == 0 && isAlive)
 		{
-			if (moving == false) 
+			if (wanderAgain == true) 
 			{
-				wanderPoint = GetRandomPoint(wanderZone);
-				Debug.Log("Centro: " + wanderZoneCentre);
-				Debug.Log(wanderPoint);
-				direction = (wanderPoint - transform.position).normalized;
-				moving = true;
-			}
-			if (moving == true) 
-			{
-				if (Vector3.Distance(wanderPoint, transform.position) <= 0.1f) 
-				{	
-					moving = false;
-				}
-				else 
-				{	
-
-					animator.SetBool("isMoving", true);
-					rb.AddForce(moveSpeed * Time.fixedDeltaTime * direction);
-				}
+				wanderAgain = false;
+				StartCoroutine(nameof(Wander));
 			}
 			
-			/*if (moving == false) 
+			if (Vector3.Distance(transform.localPosition, wanderZone.offset) > wanderZone.radius) 
 			{
-				moving = true;
-				wanderPoint = GetRandomPoint(wanderZone);
-				Debug.Log(wanderPoint);
-				StartCoroutine(nameof(WanderAgain));
-			}*/
-
+				StopCoroutine(nameof(Wander));
+				wanderAgain = true;
+			}
 						
 		}
 
 	}
 	
-	private IEnumerator WanderAgain() 
+	private IEnumerator Wander() 
 	{
-		yield return new WaitForSeconds(1f);
-		moving = false;
+		wanderPoint = GetRandomPointInsideCircunference(wanderZone);
+		direction = (wanderPoint - transform.localPosition).normalized;
+		
+		while (Vector3.Distance(wanderPoint, transform.localPosition) > 0.05f) 
+		{
+			animator.SetBool("isMoving", true);
+			rb.AddForce(wanderSpeed * Time.deltaTime * direction);
+			yield return null;
+		}
+
+		animator.SetBool("isMoving", false);
+		float wanderCd = UnityEngine.Random.Range(0, maxWanderCd + 1);
+		yield return new WaitForSeconds(wanderCd);
+		wanderAgain = true;
 	}
 	
 	private IEnumerator AttackAgain() 
@@ -237,16 +251,28 @@ public class Enemy : MonoBehaviour, IInteractable
 		return (damage, crit);
 	}
 
-	public Vector2 GetRandomPoint(CircleCollider2D circle) {
+	public Vector2 GetRandomPointInCircunference(CircleCollider2D circle) {
 
-		Vector2 globalCentre = transform.TransformPoint(wanderZoneCentre);
+		Vector2 localCentre = circle.offset;
 		float angle = UnityEngine.Random.Range(0, 2*Mathf.PI);
 
-		float x = globalCentre.x + circle.radius * Mathf.Cos(angle);
-		float y = globalCentre.y + circle.radius * Mathf.Sin(angle);
+		float x = localCentre.x + circle.radius * Mathf.Cos(angle);
+		float y = localCentre.y + circle.radius * Mathf.Sin(angle);
 		
-
 		return new Vector2(x, y);
+	}
+	
+	public Vector2 GetRandomPointInsideCircunference(CircleCollider2D circle) 
+	{
+		Vector2 localCentre = circle.offset;
+		
+		float randomX = UnityEngine.Random.Range(-circle.radius, circle.radius);
+		
+		float maxY = Mathf.Sqrt(Mathf.Pow(circle.radius, 2) - Mathf.Pow(randomX, 2));
+		
+		float randomY = UnityEngine.Random.Range(-maxY, maxY);
+		
+		return localCentre + new Vector2(randomX, randomY);
 	}
 	
 
@@ -257,8 +283,10 @@ public class Enemy : MonoBehaviour, IInteractable
 
 	public void StopInteract()
 	{
-		LootWindow.instance.Close();
-
+		if (LootWindow.instance.IsOpen) 
+		{
+			LootWindow.instance.Close();
+		}
 	}
 
 	public void LootEnemy()
@@ -279,6 +307,14 @@ public class Enemy : MonoBehaviour, IInteractable
 
 			damageableObject.OnHit(damage.Item1, damage.Item2, knockback);
 		}
+		else 
+		{
+			Vector2 direction = (Vector2)(transform.position - col.gameObject.transform.position).normalized;
+			rb.AddForce(0.25f * direction, ForceMode2D.Impulse);
+			StopCoroutine(nameof(Wander));
+			wanderAgain = true;
+		}
 	}
+	
 	
 }

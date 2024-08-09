@@ -182,7 +182,11 @@ public class LootWindow : MonoBehaviour
 
 		if (droppedLoot.Count == 0)
 		{
-			Destroy(lootFrom);
+			if (lootFrom != null && lootFrom.GetComponent<DamageableEnemy>() != null) 
+			{
+
+				lootFrom.GetComponent<DamageableEnemy>().RemoveEnemy();
+			}
 		}
 
 	   

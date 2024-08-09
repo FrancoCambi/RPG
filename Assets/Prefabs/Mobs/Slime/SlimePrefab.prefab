@@ -901,6 +901,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   aggroZone: {fileID: 8252294052706302781}
   attackZone: {fileID: 2810476166835834321}
+  wanderZone: {fileID: 0}
+  wanderCd: 2
   lootCol: {fileID: 5413129638881337734}
   levelText: {fileID: 3459434272103951859}
   nameText: {fileID: 4789525232896338957}
@@ -914,6 +916,7 @@ MonoBehaviour:
   knockbackForce: 2
   attackCd: 3
   moveSpeed: 60
+  wanderSpeed: 45
   experiencePlus: 0
   lootTable: {fileID: 3474393545884903143}
 --- !u!114 &7084069465722302020
@@ -928,14 +931,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1538061be53dee8448844345c515faa0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  manager: {fileID: 0}
   damageText: {fileID: 3568530319017838093, guid: 3a1bb8022a8b9b84f8a279da69efc78b, type: 3}
+  targetImage: {fileID: 9109329892080714550}
   canvasGroupChange: {fileID: 6628900645238325421}
   canvasGroupName: {fileID: 1013284091074955057}
   healthBar: {fileID: 7645578692767631073}
   barActiveTime: 3
-  maxHealth: 60
-  health: 60
-  invincible: 0
+  maxHealth: 15
+  health: 15
 --- !u!114 &3474393545884903143
 MonoBehaviour:
   m_ObjectHideFlags: 0
