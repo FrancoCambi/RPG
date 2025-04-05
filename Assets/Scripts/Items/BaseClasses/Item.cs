@@ -164,7 +164,7 @@ public abstract class Item : ScriptableObject, IMoveable, IDescribable
 		}
 		else 
 		{
-			string reqLevelText = LanguageManager.Instance.Translate("\nRequires Level", "\nRequiere Nivel");
+			string reqLevelText = LanguageManager.Instance.Translate("\nRequires Level ", "\nRequiere Nivel ");
 			string reqLevel = requiredLevel > 0 ? reqLevelText + requiredLevel.ToString() : string.Empty;
 			string tooltipText = LanguageManager.Instance.Translate("<color={0}>{1}</color>\n<color=#FFD400>Item Level {2}</color>{3}",
 				"<color={0}>{1}</color>\n<color=#FFD400>Nivel de Objeto {2}</color>{3}");
