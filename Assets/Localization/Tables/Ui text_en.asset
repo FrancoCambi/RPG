@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: Ui text_en
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: d87940e862d12c74c86a62b0eae424ce, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 55165005824
+    m_Localized: Keybinds
+    m_Metadata:
+      m_Items: []
+  - m_Id: 295548956672
+    m_Localized: English
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2362967535616
+    m_Localized: Save
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2401844539392
+    m_Localized: Back
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3489662447616
+    m_Localized: Main menu
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3571199717376
+    m_Localized: Action button
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4097916219392
+    m_Localized: Saving
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4311297241088
+    m_Localized: Key Bindings
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6327708889088
+    m_Localized: Bindings
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1079598357360640
+    m_Localized: Refine
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1461835707920384
+    m_Localized: Upgrade
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

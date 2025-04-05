@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79f65eb23cfb9f7499d18586dc7af0e5, type: 3}
+  m_Name: RockPowder
+  m_EditorClassIdentifier: 
+  icon: {fileID: -516266166, guid: 0f7d22f8416805b4ea31a41b3330a8ba, type: 3}
+  id: 19
+  itemNameEnglish: Rock Powder
+  itemNameSpanish: Polvo de Roca
+  itemQuality: 1
+  stackSize: 20
+  itemLevel: 1
+  requiredLevel: 0
+  descriptionEnglish: 
+  descriptionSpanish: 

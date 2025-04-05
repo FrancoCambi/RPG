@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23f4dce33a83fea4aa49d7cb0d98e104, type: 3}
+  m_Name: Hp
+  m_EditorClassIdentifier: 
+  title: Gather health potions
+  description: asdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasd
+  collectObjectives:
+  - amount: 2
+    type: Healing Potion
+  killObjectives: []
+  level: 7
+  xp: 200
+  gold:
+    gold: 1
+    silver: 15
+    copper: 78
+  rewards:
+  - item: {fileID: 11400000, guid: 506d17dfacb01314cb6621d72e5bc789, type: 2}
+    count: 1
+  - item: {fileID: 11400000, guid: 6c7d88fb55fd51042a972af66093dc1c, type: 2}
+    count: 1
+  allRewards: 0
+  repeteable: 1
