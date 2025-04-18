@@ -16,8 +16,8 @@ The game is inspired by classics like *Zelda*, *Final Fantasy* and *WoW*
 - C# (scripting).
 - Aseprite (sprite creation).
 
-## 📌 Current Status
-In development (pre-alpha version).
+## 📌 Current Status: Pre-alpha
+In development.
 
 ## 🚀 Upcoming Features
 - Improved enemy AI.
